@@ -1,0 +1,18 @@
+---
+APT_PACKAGES:
+    - python-apt
+    - python-pip
+    - vim
+    - htop
+    - mlocate
+    - dos2unix
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+    - software-properties-common
+
+PIP_PACKAGES:
+    - docker
+    - docker-py
+    - docker-compose

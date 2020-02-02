@@ -1,0 +1,88 @@
+---
+- hosts: swarm-master-1
+  become: true
+
+  tasks:
+    - name: cluster | Definining Docker Manager address
+      set_fact:
+        docker_swarm_manager_address: "{{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] }}"
+      changed_when: false
+      
+    - name: cluster | Checking Swarm Mode Status
+      command: "docker info"
+      register: "docker_info"
+      changed_when: false
+      check_mode: no
+      become: true
+
+    - name: cluster | Init Docker Swarm Mode On First Manager
+      command: >
+        docker swarm init
+        --advertise-addr={{ docker_swarm_manager_address }}
+      become: true
+      when: >
+        'Swarm: inactive' in docker_info.stdout
+        
+    - name: cluster | Capturing Docker Swarm Worker join-token
+      command: "docker swarm join-token -q worker"
+      changed_when: false
+      register: "docker_swarm_worker_token"
+      become: true
+
+    - name: cluster | Defining Docker Swarm Worker join-token
+      set_fact:
+        docker_swarm_worker_token: "{{ docker_swarm_worker_token }}"
+      changed_when: false
+      
+    - name: cluster | Capturing Docker Swarm Manager join-token
+      command: "docker swarm join-token -q manager"
+      changed_when: false
+      register: "docker_swarm_manager_token"
+      become: true
+      
+    - name: cluster | Defining Docker Swarm Manager join-token
+      set_fact:
+        docker_swarm_manager_token: "{{ docker_swarm_manager_token }}"
+      changed_when: false
+
+- hosts: swarm-master-2
+  become: true
+
+  tasks:
+    - name: cluster | Checking Swarm Mode Status
+      command: "docker info"
+      register: "docker_info"
+      changed_when: false
+      check_mode: no
+      become: true
+
+    - name: cluster | Master joins cluster
+      command: >
+        docker swarm join
+        --token "{{ hostvars['swarm-master-1'].docker_swarm_manager_token.stdout }}"
+        "{{ hostvars['swarm-master-1'].docker_swarm_manager_address }}:2377"
+      become: true
+      when: >
+        'Swarm: active' not in docker_info.stdout and
+        'Swarm: pending' not in docker_info.stdout
+        
+- hosts: workers
+  become: true
+
+  tasks:
+    - name: cluster | Checking Swarm Mode Status
+      command: "docker info"
+      register: "docker_info"
+      changed_when: false
+      check_mode: no
+      become: true
+
+    - name: cluster | Workers joins cluster
+      command: >
+        docker swarm join
+        --token "{{ hostvars['swarm-master-1'].docker_swarm_worker_token.stdout }}"
+        "{{ hostvars['swarm-master-1'].docker_swarm_manager_address }}:2377"
+      become: true
+      when: >
+        'Swarm: active' not in docker_info.stdout and
+        'Swarm: pending' not in docker_info.stdout
