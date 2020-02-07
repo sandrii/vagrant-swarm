@@ -17,8 +17,10 @@ Vagrant.configure("2") do |config|
       nodeconfig.vm.box = "debian/buster64"
       nodeconfig.vm.hostname = node[:hostname] + ".box"
       nodeconfig.vm.network :private_network, ip: node[:ip]
-      nodeconfig.vm.network :forwarded_port, guest: 8080, host: 8079 + Integer(node[:ip][-1])
-      nodeconfig.vm.network :forwarded_port, guest: 80, host: 79 + Integer(node[:ip][-1])
+	  if node[:hostname].include? "master"
+        nodeconfig.vm.network :forwarded_port, guest: 8080, host: 8080, host_ip: '127.0.0.' + node[:ip][-1]
+        nodeconfig.vm.network :forwarded_port, guest: 80, host: 80, host_ip: '127.0.0.' + node[:ip][-1]
+      end
       nodeconfig.vm.provision :shell, privileged: false do |s|
         s.inline = <<-SHELL
           sudo sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config
