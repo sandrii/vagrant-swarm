@@ -14,13 +14,15 @@ Vagrant.configure("2") do |config|
   config.ssh.forward_agent = true
   nodes.each do |node|
     config.vm.define node[:hostname] do |nodeconfig|
-      nodeconfig.vm.box = "debian/buster64"
+	  nodeconfig.vm.box = "qa_epam/debian10"
+      nodeconfig.vm.box_version = "0.0.1"
       nodeconfig.vm.hostname = node[:hostname] + ".box"
       nodeconfig.vm.network :private_network, ip: node[:ip]
 	  if node[:hostname].include? "master"
         nodeconfig.vm.network :forwarded_port, guest: 8080, host: 8080, host_ip: '127.0.0.' + node[:ip][-1]
         nodeconfig.vm.network :forwarded_port, guest: 80, host: 80, host_ip: '127.0.0.' + node[:ip][-1]
       end
+      nodeconfig.vm.synced_folder "./host_system", "/data", type: "nfs", create: true, group: "vagrant", owner: "vagrant", :mount_options => ["dmode=775","fmode=666"]
       nodeconfig.vm.provision :shell, privileged: false do |s|
         s.inline = <<-SHELL
           sudo sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config
@@ -35,7 +37,6 @@ Vagrant.configure("2") do |config|
     end
   end
   config.vm.define "swarm-worker-5" do |ansible|
-    ansible.vm.provision "file", source: ".", destination: "$HOME"
-    ansible.vm.provision "shell", path: "ansible.sh"
+    ansible.vm.provision "shell", path: "start_configuration.sh"
   end
 end

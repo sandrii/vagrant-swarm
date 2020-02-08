@@ -17,7 +17,7 @@
       service:
         name: docker
         state: started
-        enabled: true
+        enabled: yes
 
     - name: Create docker group
       group:
@@ -35,3 +35,18 @@
         name: "{{ PIP_PACKAGES }}"
         extra_args: --upgrade
         executable: pip
+        
+    - name: Install ntp
+      apt:
+        name: ntp
+        state: present
+        
+    - name: Set timezone to {{ TIMEZONE }}
+      timezone:
+        name: "{{ TIMEZONE }}"
+
+    - name: Ensure ntp is started and enabled at boot
+      service:
+        name: ntp
+        state: started
+        enabled: yes

@@ -16,3 +16,5 @@ PIP_PACKAGES:
     - docker
     - docker-py
     - docker-compose
+
+TIMEZONE: "Europe/Kiev"
