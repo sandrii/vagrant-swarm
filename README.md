@@ -1,11 +1,15 @@
-# vagrant-swarm
+# Vagrant-Swarm playground for testing and learning
 
-Vagrant    2.2.7
-VirtualBox 6.1.0
+## Prerequisites:
 
- Open PowerShell as Administrator and add two lines in the bottom of the file:
- 
- notepad c:\windows\system32\drivers\etc\hosts
+ - [x] Windows 10 with at least 20 Gb of free disk space and 8 Gb of RAM on board
+ - [x] Vagrant    2.2.7
+ - [x] VirtualBox 6.1.0
 
- 127.0.0.1        cluster.my
- 127.0.0.2        cluster.my
+## How to use:
+
+Clone this repository and execute the _vagrant up_ command and after finishing applying the configuration you'll get:
+
+ - 2 Swarm masters
+ - 3 Swarm workers
+ - Cluster ready for deploying services
