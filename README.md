@@ -10,6 +10,6 @@
 
 Clone this repository and execute the _vagrant up_ command and after finishing applying the configuration you'll get:
 
- - 2 Swarm masters
+ - 3 Swarm masters
  - 3 Swarm workers
  - Cluster ready for deploying services

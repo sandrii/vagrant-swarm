@@ -45,7 +45,7 @@
         docker_swarm_manager_token: "{{ docker_swarm_manager_token }}"
       changed_when: false
 
-- hosts: swarm-master-2
+- hosts: swarm-master-2, swarm-master-3
   become: true
 
   tasks:
