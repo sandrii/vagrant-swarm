@@ -5,9 +5,7 @@ nodes = [
   { :hostname => 'swarm-master-1', :ip => '10.0.0.11', :ram => 1024, :cpus => 1 },
   { :hostname => 'swarm-master-2', :ip => '10.0.0.12', :ram => 1024, :cpus => 1 },
   { :hostname => 'swarm-master-3', :ip => '10.0.0.13', :ram => 1024, :cpus => 1 },
-  { :hostname => 'swarm-worker-4', :ip => '10.0.0.24', :ram => 1024, :cpus => 1 },
-  { :hostname => 'swarm-worker-5', :ip => '10.0.0.25', :ram => 1024, :cpus => 1 },
-  { :hostname => 'swarm-worker-6', :ip => '10.0.0.26', :ram => 1024, :cpus => 1 }
+  { :hostname => 'swarm-worker-4', :ip => '10.0.0.24', :ram => 2048, :cpus => 2 }
 ]
 
 Vagrant.configure("2") do |config|
@@ -37,7 +35,7 @@ Vagrant.configure("2") do |config|
       nodeconfig.vm.post_up_message = "VM: %s is ready with address: %s" % [node[:hostname], node[:ip]]
     end
   end
-  config.vm.define "swarm-worker-6" do |ansible|
+  config.vm.define "swarm-worker-4" do |ansible|
     ansible.vm.provision "shell", path: "start_configuration.sh"
   end
 end

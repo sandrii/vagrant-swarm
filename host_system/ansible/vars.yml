@@ -6,6 +6,7 @@ APT_PACKAGES:
     - htop
     - mlocate
     - dos2unix
+    - docker-compose
     - apt-transport-https
     - ca-certificates
     - curl
@@ -15,6 +16,5 @@ APT_PACKAGES:
 PIP_PACKAGES:
     - docker
     - docker-py
-    - docker-compose
 
 TIMEZONE: "Europe/Kiev"
